@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  dobot_ros2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dobot_ros2
+    privileged: true
+    network_mode: host
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - /home/isseebi/Desktop/user/magician_docker/src:/ros2_ws/src/magician_ros2:rw
+    tty: true
+    stdin_open: true
