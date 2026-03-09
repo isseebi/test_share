@@ -1,0 +1,15 @@
+コードの実行コマンド
+isseebi@isseebi-box:~/Desktop/user/Isaacsim
+./python.sh /home/isseebi/Desktop/user/Reinforcement_learning/study/OpenManipulation/src/test_p2p.py 
+
+
+01
+とりあえずロボットを動かしてみる
+02
+ゲインを調整できることを確認する
+03
+振り子を環境に配置する
+04
+振り子を配置するためのクラス
+05
+振り子を運んで揺れを確認する
