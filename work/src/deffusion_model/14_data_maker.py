@@ -5,7 +5,7 @@ from omni.isaac.kit import SimulationApp
 # 1. シミュレーションアプリの起動 (ヘッドレスモード)
 # ==========================================
 # headlessをTrueに設定し、UIの立ち上げをスキップします
-simulation_app = SimulationApp({"headless": True})
+simulation_app = SimulationApp({"headless": False})
 
 import numpy as np
 from omni.isaac.core import World
@@ -21,7 +21,7 @@ world.scene.add_default_ground_plane()
 stage = world.stage
 
 # 並列シミュレーションの設定
-num_envs = 16          # 同時に動かす台車の数
+num_envs = 2          # 同時に動かす台車の数
 grid_size = int(np.ceil(np.sqrt(num_envs)))
 spacing = 5.0          # 各環境の間隔（m）
 
@@ -55,6 +55,15 @@ for i in range(num_envs):
     cuboid = world.scene.add(DynamicCuboid(prim_path=f"{env_path}/MyCuboid", name=f"cuboid_{i}", position=cuboid_pos, scale=np.array([cuboid_size]*3), color=np.array([0.2, 0.8, 0.2]), mass=5.0))
     arm = world.scene.add(DynamicCylinder(prim_path=f"{env_path}/Arm", name=f"arm_{i}", position=arm_pos, radius=arm_radius, height=arm_length, color=np.array([0.8, 0.8, 0.8])))
     bob = world.scene.add(DynamicSphere(prim_path=f"{env_path}/Bob", name=f"bob_{i}", position=bob_pos, radius=bob_radius, color=np.array([0.2, 0.2, 0.2])))
+    
+    # === 追加: 接続された部品同士の衝突判定を無効化 ===
+    # 台車とアームの衝突を無効化
+    filter_cuboid = UsdPhysics.FilteredPairsAPI.Apply(cuboid.prim)
+    filter_cuboid.CreateFilteredPairsRel().AddTarget(arm.prim.GetPath())
+
+    # アームとおもりの衝突を無効化
+    filter_arm = UsdPhysics.FilteredPairsAPI.Apply(arm.prim)
+    filter_arm.CreateFilteredPairsRel().AddTarget(bob.prim.GetPath())
 
     UsdPhysics.MassAPI.Apply(arm.prim).CreateDensityAttr(10.0)    
     UsdPhysics.MassAPI.Apply(bob.prim).CreateDensityAttr(11340.0) 
@@ -82,8 +91,12 @@ for i in range(num_envs):
     drive_x.CreateTypeAttr("force"); drive_x.CreateStiffnessAttr(kp); drive_x.CreateDampingAttr(kd)
     drive_y = UsdPhysics.DriveAPI.Apply(d6_joint.GetPrim(), "transY")
     drive_y.CreateTypeAttr("force"); drive_y.CreateStiffnessAttr(kp); drive_y.CreateDampingAttr(kd)
-    z_drive = UsdPhysics.DriveAPI.Apply(d6_joint.GetPrim(), "transZ")
-    z_drive.CreateStiffnessAttr(50000.0); z_drive.CreateTargetPositionAttr(floating_height)
+    # z_drive = UsdPhysics.DriveAPI.Apply(d6_joint.GetPrim(), "transZ")
+    # z_drive.CreateStiffnessAttr(50000.0); z_drive.CreateTargetPositionAttr(floating_height)
+
+    limit_z = UsdPhysics.LimitAPI.Apply(d6_joint.GetPrim(), "transZ")
+    limit_z.CreateLowAttr(floating_height)
+    limit_z.CreateHighAttr(floating_height)
 
     for axis in ["rotX", "rotY", "rotZ"]:
         limit = UsdPhysics.LimitAPI.Apply(d6_joint.GetPrim(), axis)
@@ -125,23 +138,44 @@ for episode in range(num_episodes):
     
     world.reset()
 
+    # ==========================================
+    # 修正1: ドライブの目標値を強制的に初期位置(0.0)に戻す
+    # ==========================================
+    for i in range(num_envs):
+        drives_x[i].GetTargetPositionAttr().Set(0.0)
+        drives_y[i].GetTargetPositionAttr().Set(0.0)
+
+    # ==========================================
+    # 修正2: 物理エンジンを安定させるためのウォームアップ
+    # ==========================================
+    for _ in range(10):
+        world.step(render=False)
+
+    # ==========================================
+    # 修正3: ウォームアップ "後" に時間を取得し、状態変数を初期化
+    # ==========================================
+    last_time = world.current_time
     x_r = np.zeros(num_envs)
     y_r = np.zeros(num_envs)
     v_r_x = np.zeros(num_envs)
     v_r_y = np.zeros(num_envs)
 
-    last_time = world.current_time
     current_step = 0
     base_history = [] 
 
+    # ==========================================
+    # 1つに統合されたメインループ
+    # ==========================================
     while simulation_app.is_running():
-        # render=Falseにすることで描画処理を省き、シミュレーション速度を最大化します
-        world.step(render=False)
+        world.step(render=True)
         
         if world.is_playing():
             current_time = world.current_time
             dt = current_time - last_time
-            if dt <= 0: dt = 1.0 / 60.0
+            
+            # 修正4: 初回ステップや処理落ちによる dt のスパイクを防ぐ
+            if dt <= 0 or dt > 0.05: 
+                dt = 1.0 / 60.0
             last_time = current_time
             
             if current_step > max_path_steps + 50: 
@@ -179,6 +213,7 @@ for episode in range(num_episodes):
             base_history.append(step_positions)
             current_step += 1
 
+    # データ保存処理
     if len(base_history) > 0:
         trajectory_data = np.array(base_history)
         dataset_xy = np.transpose(trajectory_data, (1, 0, 2))
@@ -186,6 +221,6 @@ for episode in range(num_episodes):
         dataset_path = os.path.join(save_dir, f"dataset_ep{episode:03d}.npy")
         np.save(dataset_path, dataset_xy)
         print(f"Episode {episode + 1}/{num_episodes} 完了 -> 保存: {dataset_path} | Shape: {dataset_xy.shape}")
-
+        
 print("全エピソードのシミュレーションとデータ収集が完了しました。")
 simulation_app.close()
