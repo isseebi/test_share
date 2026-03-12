@@ -6,7 +6,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://dobot_description/meshes/dae/magicianBase.dae"/>
+        <mesh filename="meshes/dae/magicianBase.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -33,7 +33,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://dobot_description/meshes/dae/magicianLink1.dae"/>
+        <mesh filename="meshes/dae/magicianLink1.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -60,7 +60,7 @@
     <visual>
       <origin rpy="0 -0.3490658503988659 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://dobot_description/meshes/dae/magicianLink2.dae"/>
+        <mesh filename="meshes/dae/magicianLink2.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -87,7 +87,7 @@
     <visual>
       <origin rpy="0 -0.47123889803846897 0" xyz="0.01645236135969491 0 -0.13399373047157848"/>
       <geometry>
-        <mesh filename="package://dobot_description/meshes/dae/magicianLink3.dae"/>
+        <mesh filename="meshes/dae/magicianLink3.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -142,7 +142,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
       <geometry>
-        <mesh filename="package://dobot_description/meshes/collision/end_tools/suction_cup_collision_part1.dae"/>
+        <mesh filename="meshes/collision/end_tools/suction_cup_collision_part1.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -179,7 +179,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
       <geometry>
-        <mesh filename="package://dobot_description/meshes/collision/end_tools/suction_cup_collision_part2.dae"/>
+        <mesh filename="meshes/collision/end_tools/suction_cup_collision_part2.dae"/>
       </geometry>
     </visual>
     <collision>
