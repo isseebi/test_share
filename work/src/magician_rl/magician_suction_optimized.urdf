@@ -1,0 +1,197 @@
+<?xml version="1.0" ?>
+<!-- Optimized URDF with Suction Cup and Inertial Properties -->
+<robot name="magician" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <link name="magician_root_link"/>
+  <link name="magician_base_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dobot_description/meshes/dae/magicianBase.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <geometry>
+        <box size="0.2 0.2 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="magician_joint_base" type="fixed">
+    <parent link="magician_root_link"/>
+    <child link="magician_base_link"/>
+    <axis xyz="0 0 0"/>
+    <limit effort="2000" lower="0" upper="0" velocity="1"/>
+    <origin rpy="0 0 0" xyz="0 0 0.131305"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="magician_link_1">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dobot_description/meshes/dae/magicianLink1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.1" radius="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.002"/>
+    </inertial>
+  </link>
+  <joint name="magician_joint_1" type="revolute">
+    <parent link="magician_base_link"/>
+    <child link="magician_link_1"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2000" lower="-2.1816615649929116" upper="2.1816615649929116" velocity="1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="magician_link_2">
+    <visual>
+      <origin rpy="0 -0.3490658503988659 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dobot_description/meshes/dae/magicianLink2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.07"/>
+      <geometry>
+        <box size="0.05 0.05 0.14"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0 0 0.07"/>
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.002"/>
+    </inertial>
+  </link>
+  <joint name="magician_joint_2" type="revolute">
+    <parent link="magician_link_1"/>
+    <child link="magician_link_2"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2000" lower="-0.08726646259971647" upper="1.5707963267948966" velocity="1"/>
+    <origin rpy="0 0.0 0" xyz="0 0 0.0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="magician_link_3">
+    <visual>
+      <origin rpy="0 -0.47123889803846897 0" xyz="0.01645236135969491 0 -0.13399373047157848"/>
+      <geometry>
+        <mesh filename="package://dobot_description/meshes/dae/magicianLink3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.07 0 0"/>
+      <geometry>
+        <box size="0.14 0.05 0.05"/>
+      </geometry>
+    </collision>
+     <inertial>
+      <mass value="0.5"/>
+      <origin xyz="0.07 0 0"/>
+      <inertia ixx="0.002" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.002"/>
+    </inertial>
+  </link>
+  <joint name="magician_joint_3" type="revolute">
+    <parent link="magician_link_2"/>
+    <child link="magician_link_3"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2000" lower="-0.2617993877991494" upper="1.2217304763960306" velocity="1"/>
+    <origin rpy="0 0 0" xyz="0 0.0 0.135"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="magician_link_virtual">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="magician_joint_mimic_1" type="revolute">
+    <parent link="magician_link_3"/>
+    <child link="magician_link_virtual"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2000" lower="0.0" upper="6.283185307179586" velocity="1"/>
+    <origin rpy="0 0 0" xyz="0.147 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="magician_joint_2" multiplier="-1" offset="0"/>
+  </joint>
+  <link name="magician_link_4">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
+      <geometry>
+        <mesh filename="package://dobot_description/meshes/collision/end_tools/suction_cup_collision_part1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
+      <geometry>
+        <box size="0.06 0.04 0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="magician_joint_mimic_2" type="revolute">
+    <parent link="magician_link_virtual"/>
+    <child link="magician_link_4"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2000" lower="0.0" upper="6.283185307179586" velocity="1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+    <mimic joint="magician_joint_3" multiplier="-1" offset="0"/>
+  </joint>
+  
+  <joint name="magician_joint_suction" type="prismatic">
+    <parent link="magician_link_4"/>
+    <child link="magician_link_gripper_core"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="100" lower="0" upper="0.005" velocity="1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="magician_link_gripper_core">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
+      <geometry>
+        <mesh filename="package://dobot_description/meshes/collision/end_tools/suction_cup_collision_part2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.17715067840465534 0 -0.058595107267811"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0005" ixy="0.0" ixz="0.0" iyy="0.0005" iyz="0.0" izz="0.0005"/>
+    </inertial>
+  </link>
+</robot>
