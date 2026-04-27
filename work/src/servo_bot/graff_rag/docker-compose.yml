@@ -1,0 +1,20 @@
+version: '3'
+services:
+  memgraph:
+    # platformにはDB本体、MAGE（拡張機能）、Lab（GUI）がすべて含まれています
+    image: memgraph/memgraph-platform:latest
+    container_name: memgraph-magnum
+    ports:
+      - "7687:7687"  # DB接続用 (Bolt)
+      - "3000:3000"  # Memgraph Lab (ブラウザ用GUI)
+      - "7444:7444"  # 【追加】Labがログ表示や監視に内部で使用するポート
+    volumes:
+      - mg_lib:/var/lib/memgraph
+      - mg_log:/var/log/memgraph
+      - mg_etc:/etc/memgraph
+    restart: always
+
+volumes:
+  mg_lib:
+  mg_log:
+  mg_etc:
