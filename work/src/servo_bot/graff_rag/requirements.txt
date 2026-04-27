@@ -1,8 +1,0 @@
-llama-index
-llama-index-graph-stores-memgraph
-llama-index-embeddings-ollama
-llama-index-llms-ollama
-llama-index-readers-file
-python-dotenv
-pymgclient
-pypdf
